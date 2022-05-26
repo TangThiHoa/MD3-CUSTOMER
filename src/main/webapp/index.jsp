@@ -8,6 +8,8 @@
 <h1><%= "Hello customer" %>
 </h1>
 <br/>
-<a href="/customers"></a>
+<a href="/customers">
+    <button>an</button>
+</a>
 </body>
 </html>

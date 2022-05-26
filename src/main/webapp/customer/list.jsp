@@ -15,7 +15,12 @@
 <h1>List of customer</h1>
 <a href="/customers?action=create">Create customer</a>
 <c:forEach items="${dskh}" var="cus">
-    <h2>${cus.id} , ${cus.name} , ${cus.age}</h2>
+    <h2>${cus.id} , ${cus.name} , ${cus.age},
+        <a href="/customers?action=edit&id=${cus.id}">Edit</a>
+        <a href="/customers?action=delete&id=${cus.id}">Delete</a>
+
+    </h2>
+
 </c:forEach>
 </body>
 </html>

@@ -33,49 +33,75 @@ public class CustomerDAO implements ICustomerDAO {
 
     @Override
     public void add(Customer customer) {
-
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into customer(id, name, age) values (?, ?, ?)");) {
+            preparedStatement.setInt(1, customer.getId());
+            preparedStatement.setString(2, customer.getName());
+            preparedStatement.setInt(3, customer.getAge());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
 
     @Override
     public Customer findById(int id) {
-        return null;
+        List<Customer> customers = findAll();
+        Customer customer = new Customer();
+        for (Customer cus : customers) {
+            if (id == cus.getId()) {
+                customer = cus;
+
+            }
+        }
+        return customer;
     }
 
     @Override
     public List<Customer> findAll() {
-        List<Customer> customerList = new ArrayList<>();
-
-        Connection connection = getConnection();
-        try {
-            String sql = "select * from customer";
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(sql);
-
+        List<Customer> customers = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from customer order by age");) {
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");
-                int age = rs.getInt("age");
                 String name = rs.getString("name");
-                Customer customer = new Customer(id, name, age);
-
-                customerList.add(customer);
+                int email = Integer.parseInt(rs.getString("age"));
+                customers.add(new Customer(id, name, email));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
-
-        return customerList;
+        return customers;
     }
+
 
     private void printSQLException(SQLException e) {
     }
 
     @Override
     public boolean delete(int id) throws SQLException {
-        return false;
+        boolean xoa= false;
+        try(
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("delete from customer where id = ?");){
+       preparedStatement.setInt(1,id);
+       xoa = preparedStatement.executeUpdate()>0;
+        }
+        return xoa;
     }
 
     @Override
     public boolean update(Customer customer) throws SQLException {
-        return false;
+        boolean a = false;
+        try (
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update customer set name= ? , age=? where id=?");) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setInt(2, customer.getAge());
+            preparedStatement.setInt(3, customer.getId());
+            a = preparedStatement.executeUpdate() > 0;
+
+        }
+        return a;
     }
 }

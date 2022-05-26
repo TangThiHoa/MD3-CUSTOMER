@@ -1,9 +1,12 @@
 package model;
 
 public class Customer {
-    int id ;
-    String name;
-    int age;
+    private int id;
+    private String name;
+    private int age;
+
+    public Customer() {
+    }
 
     public Customer(int id, String name, int age) {
         this.id = id;
